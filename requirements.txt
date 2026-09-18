@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+pytest
+pandas
+numpy
+pydantic
+pydantic-settings
+
+python-dotenv
+kiteconnect
