@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: tradepilot
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: MARKET_DATA_SOURCE
+        value: sample
+      # Note: Do not hardcode secrets here, configure them in the Render Dashboard.
+      - key: ZERODHA_API_KEY
+        value: ""
+      - key: ZERODHA_API_SECRET
+        value: ""
+      - key: ZERODHA_ACCESS_TOKEN
+        value: ""

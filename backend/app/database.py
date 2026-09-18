@@ -3,13 +3,18 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# Create database in the data directory at the root of the project
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DATA_DIR = os.path.join(BASE_DIR, "data")
-if not os.path.exists(DATA_DIR):
-    os.makedirs(DATA_DIR)
-
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{os.path.join(DATA_DIR, 'tradepilot.db')}"
+if os.environ.get("RENDER"):
+    # Store in persistent disk attached at /data on Render
+    db_dir = "/data"
+    os.makedirs(db_dir, exist_ok=True)
+    SQLALCHEMY_DATABASE_URL = f"sqlite:///{os.path.join(db_dir, 'tradepilot.db')}"
+else:
+    # Create database in the data directory at the root of the project
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    DATA_DIR = os.path.join(BASE_DIR, "data")
+    if not os.path.exists(DATA_DIR):
+        os.makedirs(DATA_DIR)
+    SQLALCHEMY_DATABASE_URL = f"sqlite:///{os.path.join(DATA_DIR, 'tradepilot.db')}"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}

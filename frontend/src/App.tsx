@@ -8,7 +8,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'backtest'>('dashboard')
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/health')
+    fetch('/api/health')
       .then(res => res.json())
       .then(data => setHealthStatus(data.status))
       .catch(() => setHealthStatus('offline'))

@@ -1,4 +1,7 @@
+import os
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
 from app.routers import market, indicators, strategy, risk, broker, paper, trading, backtest
@@ -30,6 +33,22 @@ app.include_router(broker.router)
 app.include_router(paper.router)
 app.include_router(trading.router)
 app.include_router(backtest.router)
+
+# Serve React Frontend
+frontend_dist = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend", "dist")
+
+if os.path.exists(frontend_dist):
+    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist, "assets")), name="assets")
+    
+    @app.get("/{full_path:path}")
+    def serve_frontend(full_path: str):
+        # Serve index.html for all unrecognized paths to let React Router handle them
+        # or just serve it if path doesn't map to a static file.
+        # But we only mounted /assets. We also need to serve root files like favicon.
+        file_path = os.path.join(frontend_dist, full_path)
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return FileResponse(file_path)
+        return FileResponse(os.path.join(frontend_dist, "index.html"))
 
 
 

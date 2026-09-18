@@ -41,10 +41,10 @@ export default function TradingDashboard() {
   const fetchPortfolio = async () => {
     try {
       const [accRes, posRes, ordRes, trdRes] = await Promise.all([
-        fetch('http://127.0.0.1:8000/api/paper/account'),
-        fetch('http://127.0.0.1:8000/api/paper/positions'),
-        fetch('http://127.0.0.1:8000/api/paper/orders'),
-        fetch('http://127.0.0.1:8000/api/paper/trades')
+        fetch('/api/paper/account'),
+        fetch('/api/paper/positions'),
+        fetch('/api/paper/orders'),
+        fetch('/api/paper/trades')
       ])
       
       setAccount(await accRes.json())
@@ -65,8 +65,8 @@ export default function TradingDashboard() {
   const fetchMarketAndStrategy = async () => {
     try {
       const [historyRes, strategyRes] = await Promise.all([
-        fetch(`http://127.0.0.1:8000/api/indicators/${symbol}`),
-        fetch(`http://127.0.0.1:8000/api/strategy/${symbol}`)
+        fetch(`/api/indicators/${symbol}`),
+        fetch(`/api/strategy/${symbol}`)
       ])
       
       const hist = await historyRes.json()
@@ -108,7 +108,7 @@ export default function TradingDashboard() {
       direction
     }
 
-    fetch('http://127.0.0.1:8000/api/risk/calculate', {
+    fetch('/api/risk/calculate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -134,7 +134,7 @@ export default function TradingDashboard() {
   const handleSimulatePrice = async () => {
     if (!simPrice) return
     try {
-      await fetch('http://127.0.0.1:8000/api/paper/market-price', {
+      await fetch('/api/paper/market-price', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ symbol, price: simPrice })
@@ -158,7 +158,7 @@ export default function TradingDashboard() {
         target: target ? parseFloat(target) : null
       }
       
-      const res = await fetch('http://127.0.0.1:8000/api/trading/analyze-and-execute', {
+      const res = await fetch('/api/trading/analyze-and-execute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -179,7 +179,7 @@ export default function TradingDashboard() {
   const handleClosePosition = async (sym: string) => {
     if(!window.confirm(`This will close the paper position for ${sym}. No real money is involved.`)) return
     try {
-      await fetch(`http://127.0.0.1:8000/api/paper/positions/${sym}/close`, { method: 'POST' })
+      await fetch(`/api/paper/positions/${sym}/close`, { method: 'POST' })
       fetchPortfolio()
     } catch (e) {
       console.error(e)
