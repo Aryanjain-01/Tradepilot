@@ -24,6 +24,9 @@ COPY --from=backend-builder /usr/local/bin/ /usr/local/bin/
 # Copy backend source
 COPY backend/ ./backend/
 
+# Copy sample market data
+COPY data/ ./data/
+
 # Copy built frontend
 COPY --from=frontend-builder /app/dist/ ./frontend/dist/
 
